@@ -5,12 +5,11 @@ import chess.domain.piece.EmptyPiece;
 import chess.domain.piece.Piece;
 import chess.domain.piece.PieceType;
 import chess.domain.position.Position;
-import java.util.Collections;
 import java.util.List;
 
 public class ChessBoard {
 
-    private final List<List<Piece>> board;
+    private final Board board;
 
     public ChessBoard(BoardGenerator boardGenerator) {
         this.board = boardGenerator.generate();
@@ -21,26 +20,18 @@ public class ChessBoard {
         Position targetPosition = new Position(target);
         validateSamePosition(sourcePosition, targetPosition);
 
-        Piece sourcePiece = findPiece(sourcePosition);
+        Piece sourcePiece = board.getPiece(sourcePosition);
+        validateEmptyPiece(sourcePiece);
         sourcePiece.validateMove(board, sourcePosition, targetPosition);
 
-        board.get(sourcePosition.getRankIndex()).set(sourcePosition.getFileIndex(), new EmptyPiece());
-        board.get(targetPosition.getRankIndex()).set(targetPosition.getFileIndex(), sourcePiece);
+        board.place(sourcePosition.getRankIndex(), sourcePosition.getFileIndex(), new EmptyPiece());
+        board.place(targetPosition.getRankIndex(), targetPosition.getFileIndex(), sourcePiece);
     }
 
     private void validateSamePosition(Position sourcePosition, Position targetPosition) {
         if (sourcePosition.equals(targetPosition)) {
             throw new IllegalArgumentException("source 위치와 target 위치는 같을 수 없습니다.");
         }
-    }
-
-    private Piece findPiece(Position sourcePosition) {
-        int rankIndex = sourcePosition.getRankIndex();
-        int fileIndex = sourcePosition.getFileIndex();
-        Piece piece = board.get(rankIndex).get(fileIndex);
-        validateEmptyPiece(piece);
-
-        return piece;
     }
 
     private void validateEmptyPiece(Piece piece) {
@@ -50,7 +41,7 @@ public class ChessBoard {
     }
 
     public double calculateScore(Color color) {
-        double score = board.stream()
+        double score = getBoard().stream()
                 .flatMap(List::stream)
                 .filter(piece -> piece.isSameColor(color))
                 .mapToDouble(Piece::getScore)
@@ -73,7 +64,7 @@ public class ChessBoard {
     private int getPawnCount(Color color, int fileIndex) {
         int pawnCount = 0;
         for (int j = 0; j < 8; j++) {
-            Piece piece = board.get(j).get(fileIndex);
+            Piece piece = board.getPiece(j, fileIndex);
             pawnCount += calculatePawnCount(piece, color);
         }
 
@@ -89,12 +80,12 @@ public class ChessBoard {
     }
 
     public boolean isTurn(String source, Color color) {
-        Piece sourcePiece = findPiece(new Position(source));
+        Piece sourcePiece = board.getPiece(new Position(source));
         return sourcePiece.isSameColor(color);
     }
 
     public boolean isFinished() {
-        long count = board.stream()
+        long count = getBoard().stream()
                 .flatMap(List::stream)
                 .filter(piece -> piece.isSamePieceType(PieceType.KING))
                 .count();
@@ -103,6 +94,10 @@ public class ChessBoard {
     }
 
     public List<List<Piece>> getBoard() {
-        return Collections.unmodifiableList(board);
+        return board.getBoard();
+    }
+
+    public Board getBoard2() {
+        return board;
     }
 }

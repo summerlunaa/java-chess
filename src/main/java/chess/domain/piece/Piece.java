@@ -1,5 +1,6 @@
 package chess.domain.piece;
 
+import chess.domain.Board;
 import chess.domain.Color;
 import chess.domain.piece.strategy.MovingStrategy;
 import chess.domain.position.Position;
@@ -17,7 +18,7 @@ public abstract class Piece {
         this.movingStrategy = movingStrategy;
     }
 
-    public void validateMove(List<List<Piece>> board, Position sourcePosition, Position targetPosition) {
+    public void validateMove(Board board, Position sourcePosition, Position targetPosition) {
         movingStrategy.validateMove(board, sourcePosition, targetPosition);
     }
 

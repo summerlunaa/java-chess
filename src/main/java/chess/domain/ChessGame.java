@@ -38,8 +38,8 @@ public class ChessGame {
         return state.winner();
     }
 
-    public List<List<Piece>> board() {
+    public Board board() {
         ChessBoard chessBoard = state.chessBoard();
-        return chessBoard.getBoard();
+        return chessBoard.getBoard2();
     }
 }

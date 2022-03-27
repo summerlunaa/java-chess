@@ -2,6 +2,7 @@ package chess.domain.generator;
 
 import static java.util.stream.Collectors.toList;
 
+import chess.domain.Board;
 import chess.domain.BoardSetting;
 import chess.domain.piece.EmptyPiece;
 import chess.domain.piece.Piece;
@@ -12,7 +13,7 @@ import java.util.stream.IntStream;
 public class InitBoardGenerator implements BoardGenerator {
 
     @Override
-    public List<List<Piece>> generate() {
+    public Board generate() {
         List<List<Piece>> board = IntStream.rangeClosed(0, 7)
                 .mapToObj(ignored -> generatePieces())
                 .collect(toList());
@@ -21,7 +22,7 @@ public class InitBoardGenerator implements BoardGenerator {
             fillPieces(board, boardSetting);
         }
 
-        return board;
+        return new Board(board);
     }
 
     private List<Piece> generatePieces() {

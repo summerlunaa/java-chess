@@ -2,6 +2,7 @@ package chess.view;
 
 import static java.util.stream.Collectors.joining;
 
+import chess.domain.Board;
 import chess.domain.Result;
 import chess.domain.piece.Piece;
 import java.util.List;
@@ -25,8 +26,8 @@ public class OutputView {
         System.out.println(ERROR_PREFIX + message + NEW_LINE);
     }
 
-    public static void printChessBoard(List<List<Piece>> board) {
-        board.stream()
+    public static void printChessBoard(Board board) {
+        board.getBoard().stream()
                 .map(OutputView::generateRow)
                 .forEach(System.out::println);
 
