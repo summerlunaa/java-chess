@@ -17,7 +17,7 @@ public class LengthBasedMovingStrategy implements MovingStrategy {
     @Override
     public void validateMove(Board board, Position sourcePosition, Position targetPosition) {
         validateTargetPosition(sourcePosition, targetPosition);
-        validateSameColor(board, sourcePosition, targetPosition);
+        validateSameColor(board.getPiece(sourcePosition), board.getPiece(targetPosition));
     }
 
     private void validateTargetPosition(Position sourcePosition, Position targetPosition) {
@@ -33,11 +33,8 @@ public class LengthBasedMovingStrategy implements MovingStrategy {
         return value * value;
     }
 
-    private void validateSameColor(Board board, Position sourcePosition, Position targetPosition) {
-        Piece sourcePiece = board.getPiece(sourcePosition);
-        Piece targetPiece = board.getPiece(targetPosition);
-
-        if (sourcePiece.isSameColor(targetPiece)) {
+    private void validateSameColor(Piece sourcePiece, Piece targetPiece) {
+        if(sourcePiece.isSameColor(targetPiece)) {
             throw new IllegalArgumentException("같은 진영 기물은 공격할 수 없습니다.");
         }
     }

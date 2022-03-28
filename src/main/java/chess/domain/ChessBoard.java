@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ChessBoard {
 
-    private final Board board;
+    private Board board;
 
     public ChessBoard(BoardGenerator boardGenerator) {
         this.board = boardGenerator.generate();
@@ -24,8 +24,8 @@ public class ChessBoard {
         validateEmptyPiece(sourcePiece);
         sourcePiece.validateMove(board, sourcePosition, targetPosition);
 
-        board.place(sourcePosition.getRankIndex(), sourcePosition.getFileIndex(), new EmptyPiece());
-        board.place(targetPosition.getRankIndex(), targetPosition.getFileIndex(), sourcePiece);
+        board = board.place(sourcePosition.getRankIndex(), sourcePosition.getFileIndex(), new EmptyPiece());
+        board = board.place(targetPosition.getRankIndex(), targetPosition.getFileIndex(), sourcePiece);
     }
 
     private void validateSamePosition(Position sourcePosition, Position targetPosition) {
@@ -52,31 +52,13 @@ public class ChessBoard {
 
     private double getPawnScore(Color color) {
         double pawnScore = 0;
-        for (int i = 0; i < 8; i++) {
-            int pawnCount = getPawnCount(color, i);
-            if (getPawnCount(color, i) > 1) {
+        for (int fileIndex = 0; fileIndex < 8; fileIndex++) {
+            int pawnCount = board.countPawn(color, fileIndex);
+            if (pawnCount > 1) {
                 pawnScore += pawnCount * 0.5;
             }
         }
         return pawnScore;
-    }
-
-    private int getPawnCount(Color color, int fileIndex) {
-        int pawnCount = 0;
-        for (int j = 0; j < 8; j++) {
-            Piece piece = board.getPiece(j, fileIndex);
-            pawnCount += calculatePawnCount(piece, color);
-        }
-
-        return pawnCount;
-    }
-
-    private int calculatePawnCount(Piece piece, Color color) {
-        if (piece.isSamePieceType(PieceType.PAWN) && piece.isSameColor(color)) {
-            return 1;
-        }
-
-        return 0;
     }
 
     public boolean isTurn(String source, Color color) {

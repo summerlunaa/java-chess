@@ -3,7 +3,7 @@ package chess.domain.piece;
 import chess.domain.Color;
 import chess.domain.piece.strategy.BlackPawnMovingStrategy;
 import chess.domain.piece.strategy.MovingStrategy;
-import chess.domain.piece.strategy.WhitePawnMovingStrategy1;
+import chess.domain.piece.strategy.WhitePawnMovingStrategy;
 
 public class Pawn extends Piece {
 
@@ -16,6 +16,6 @@ public class Pawn extends Piece {
             return new BlackPawnMovingStrategy();
         }
 
-        return new WhitePawnMovingStrategy1();
+        return new WhitePawnMovingStrategy();
     }
 }

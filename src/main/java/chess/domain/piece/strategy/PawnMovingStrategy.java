@@ -26,11 +26,12 @@ public abstract class PawnMovingStrategy implements MovingStrategy {
         Direction direction = Direction.of(sourcePosition, targetPosition);
 
         if (direction == movableDirection && isMovableLengthAtMove(sourcePosition, rankLength)) {
-            validateMoveForward(board, sourcePosition, rankLength, direction);
+            validateMoveTop(sourcePosition, rankLength, board.getPiece(sourcePosition.add(direction)));
+            validateExistPiece(board.getPiece(targetPosition));
             return;
         }
         if (capturableDirections.contains(direction) && isMovableLengthAtCapture(rankLength, fileLength)) {
-            validateCapture(board, targetPosition);
+            validateCapture(board.getPiece(targetPosition));
             return;
         }
 
@@ -42,21 +43,14 @@ public abstract class PawnMovingStrategy implements MovingStrategy {
                 || (sourcePosition.getRankIndex() == rankIndexStartingPoint && rankLength == 2);
     }
 
-    private void validateMoveForward(Board board, Position sourcePosition, int rankLength,
-                                     Direction direction) {
-        Piece sourcePiece = board.getPiece(sourcePosition.add(direction));
-        validateMoveTop(sourcePosition, rankLength, sourcePiece);
-        validateExistPiece(sourcePiece);
-    }
-
-    private void validateMoveTop(Position source, int rankLength, Piece sourcePiece) {
+    private void validateMoveTop(Position source, int rankLength, Piece piece) {
         if (rankLength == 2 && source.getRankIndex() == rankIndexStartingPoint) {
-            validateExistPiece(sourcePiece);
+            validateExistPiece(piece);
         }
     }
 
-    private void validateExistPiece(Piece target) {
-        if (!target.isEmpty()) {
+    private void validateExistPiece(Piece piece) {
+        if (!piece.isEmpty()) {
             throw new IllegalArgumentException("경로에 기물이 존재하여 이동할 수 없습니다.");
         }
     }
@@ -65,14 +59,13 @@ public abstract class PawnMovingStrategy implements MovingStrategy {
         return rankLength + fileLength == 2;
     }
 
-    private void validateCapture(Board board, Position targetPosition) {
-        Piece targetPiece = board.getPiece(targetPosition);
+    private void validateCapture(Piece targetPiece) {
         validateEmptyPiece(targetPiece);
         validateSameColor(targetPiece);
     }
 
-    private void validateEmptyPiece(Piece targetPiece) {
-        if (targetPiece.isEmpty()) {
+    private void validateEmptyPiece(Piece piece) {
+        if (piece.isEmpty()) {
             throw new IllegalArgumentException("target 위치에 기물이 존재하지 않아 공격할 수 없습니다.");
         }
     }
